@@ -47,10 +47,22 @@ namespace CRUDExample
             services.AddTransient<PersonsListActionFilter>();
 
             //Enable Identity in this project 
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            {
+                options.Password.RequiredLength = 5;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredUniqueChars = 3; // can be Eg: AB12AB
+            })
+
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+
                 .AddDefaultTokenProviders()
+
                 .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
+                 
                 .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
 
             services.AddHttpLogging(options => {

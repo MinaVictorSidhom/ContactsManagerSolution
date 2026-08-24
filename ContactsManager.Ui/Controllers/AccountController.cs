@@ -46,7 +46,7 @@ namespace ContactsManager.Ui.Controllers
             if(result.Succeeded)
             {
                 //Sign In
-                await _signInManager.SignInAsync(user,isPersistent: false);
+                await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction(nameof(PersonsController.Index), "Persons");
             }
             else
