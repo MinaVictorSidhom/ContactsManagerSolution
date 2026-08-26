@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
+using Microsoft.AspNetCore.Authorization;
 using RepositoryContracts;
 using ServiceContracts;
 using Services;
@@ -38,13 +39,13 @@ namespace CRUDExample
             services.AddScoped<IPersonsUpdaterService, PersonsUpdaterService>();
             services.AddScoped<IPersonsSorterService, PersonsSorterService>();
 
-         
-                services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddTransient<PersonsListActionFilter>();
+
+            services.AddDbContext<ApplicationDbContext>(options =>
                 {
                     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
                 });
 
-            services.AddTransient<PersonsListActionFilter>();
 
             //Enable Identity in this project 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -64,6 +65,17 @@ namespace CRUDExample
                 .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
                  
                 .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
+
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                //enforce authorization policy (user must be authenticated) for all action methods
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+            });
 
             services.AddHttpLogging(options => {
                 options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.

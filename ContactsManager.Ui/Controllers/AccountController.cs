@@ -1,12 +1,14 @@
 ﻿using ContactsManager.Core.Domain.IdentityUser;
 using ContactsManager.Core.DTO;
 using CRUDExample.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ContactsManager.Ui.Controllers
 {
     [Route("[controller]/[action]")]
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

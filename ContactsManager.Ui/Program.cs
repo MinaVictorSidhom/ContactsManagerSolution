@@ -24,7 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
 {
     loggerConfiguration.ReadFrom.Configuration(context.Configuration)//read configuration settings from built in Iconfiguration
-    .ReadFrom.Services(services); //read out current app's services and make thme  available to serilog
+    .ReadFrom.Services(services); //read out current app's services and make them  available to serilog
 });
 
 builder.Services.ConfigureServices(builder.Configuration);
@@ -55,8 +55,9 @@ if (builder.Environment.IsEnvironment("Test") == false)
 { Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa"); }
 
 app.UseStaticFiles();
-app.UseAuthentication(); // Reading Identity Cookie
 app.UseRouting();   //Identifying action method based route
+app.UseAuthentication(); // Reading Identity Cookie
+app.UseAuthorization();  //Validates access permissions of the user
 app.MapControllers(); //Executes the filter pipeline(action+filters)
 app.Run();
 
