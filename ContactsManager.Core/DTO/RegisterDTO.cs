@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using ContactsManager.Core.Enums;
 
 namespace ContactsManager.Core.DTO
 {
@@ -30,5 +31,6 @@ namespace ContactsManager.Core.DTO
         [Compare("Password",ErrorMessage ="Password and confirm password do not match")]
         public string ConfirmPassword { get; set; }
 
+        public UserTypeOptions UserType { get; set; } = UserTypeOptions.User;
     }
 }
