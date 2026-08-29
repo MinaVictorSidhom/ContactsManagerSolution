@@ -1,5 +1,6 @@
 ﻿using ContactsManager.Core.Domain.IdentityUser;
 using ContactsManager.Core.DTO;
+using ContactsManager.Core.Enums;
 using CRUDExample.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,11 +14,12 @@ namespace ContactsManager.Ui.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,RoleManager<ApplicationRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
 
@@ -47,7 +49,23 @@ namespace ContactsManager.Ui.Controllers
 
             if(result.Succeeded)
             {
-                //Sign In
+                if(registerDTO.UserType==Core.Enums.UserTypeOptions.Admin)
+                {
+                    if(await _roleManager.FindByNameAsync(UserTypeOptions.Admin.ToString())is null)
+                    {
+                        ApplicationRole applicationRole = new ApplicationRole()
+                        {
+                            Name = UserTypeOptions.Admin.ToString()
+                        };
+
+                        await _roleManager.CreateAsync(applicationRole);
+                    }
+                    await _userManager.AddToRoleAsync(user, UserTypeOptions.Admin.ToString());
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, UserTypeOptions.User.ToString());
+                }
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction(nameof(PersonsController.Index), "Persons");
             }
