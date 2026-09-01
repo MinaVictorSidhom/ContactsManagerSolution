@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using RepositoryContracts;
 using ServiceContracts;
 using Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CRUDExample
 {
@@ -25,7 +26,7 @@ namespace CRUDExample
 
                 options.Filters.Add(new ResponseHeaderActionFilter(logger) { Key = "My-Key-From-Global", Value = "My-Value-From-Global", Order = 2 });
 
-                ;
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
 
             //add services into IoC container

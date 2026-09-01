@@ -43,6 +43,9 @@ else
     app.UseExceptionHandlingMiddleware();
 }
 
+app.UseHsts();
+app.UseHttpsRedirection();
+
 app.UseHttpLogging();
 
 //app.Logger.LogDebug("debug-message");
